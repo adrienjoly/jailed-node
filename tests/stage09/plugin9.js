@@ -1,5 +1,5 @@
 var finalize = function() {
-    application.remote.done();
+  application.remote.done()
 }
 
-application.remote.checkAttempt(finalize);
+application.remote.checkAttempt(finalize)

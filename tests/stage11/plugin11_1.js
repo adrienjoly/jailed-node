@@ -1,1 +1,1 @@
-application.disconnect();
+application.disconnect()

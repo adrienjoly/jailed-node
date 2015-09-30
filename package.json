@@ -1,0 +1,32 @@
+{
+  "name": "jailed-node",
+  "version": "0.3.0",
+  "description": "Jailed-Node — flexible JS sandbox",
+  "main": "lib/jailed.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./tests/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com//theThings/jailed-node.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com//theThings/jailed-node/issues"
+  },
+  "homepage": "https://github.com//theThings/jailed-node#readme",
+  "dependencies": {
+    "debug": "^2.2.0"
+  },
+  "engines": {
+    "node": ">=0.10.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.0",
+    "chai": "^1.10.0"
+  }
+}

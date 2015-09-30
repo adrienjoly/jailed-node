@@ -1,2 +1,1 @@
-
-application.remote.callMe();
+application.remote.callMe()

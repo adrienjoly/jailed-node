@@ -1,4 +1,4 @@
-Jailed — flexible JS sandbox
+[![Build Status](https://travis-ci.org/theThings/jailed-node.svg)](https://travis-ci.org/theThings/jailed-node)  Jailed — flexible JS sandbox
 ============================
 
 Jailed is a small JavaScript library for running untrusted code in a
@@ -15,9 +15,7 @@ directly calling those functions, but the application owner decides
 which functions to export, and therefore what will be allowed for the
 untrusted code to perform.
 
-The code is executed as a *plugin*, a special instance running in a
-web-worker inside a sandboxed frame (in case of web-browser
-environment), or as a restricted subprocess (in Node.js).
+The code is executed as a *plugin*, a special instance running in a restricted subprocess.
 
 You can use Jailed to:
 
@@ -35,14 +33,11 @@ You can use Jailed to:
   times;
 
 - Perform heavy calculations in a separate thread
-  *[Demo](http://asvd.github.io/jailed/demos/web/circle/)*
 
 - Delegate to a 3rd-party code the precise set of functions to
   harmlessly operate on the part of your application
-  *[Demo](http://asvd.github.io/jailed/demos/web/banner/)*
 
 - Safely execute user-submitted code
-  *[Demo](http://asvd.github.io/jailed/demos/web/console/)*
 
 - Export the particular set of application functions into the sandbox
   (or in the opposite direction), and let those functions be invoked
@@ -94,22 +89,7 @@ same way, particularly it may invoke a newer callback in reply.
 
 ### Installation
 
-For the web-browser environment — download and unpack the
-[distribution](https://github.com/asvd/jailed/releases/download/v0.2.0/jailed-0.2.0.tar.gz), or install it using [Bower](http://bower.io/):
-
-```sh
-$ bower install jailed
-```
-
-Load the `jailed.js` in a preferrable way. That is an UMD module, thus
-for instance it may simply be loaded as a plain JavaScript file using
-the `<script>` tag:
-
-```html
-<script src="jailed/jailed.js"></script>
-```
-
-For Node.js — install Jailed with npm:
+Install Jailed with npm:
 
 ```sh
 $ npm install jailed
@@ -122,7 +102,7 @@ var jailed = require('jailed');
 ```
 
 Optionally you may load the script from the
-[distribution](https://github.com/asvd/jailed/releases/download/v0.2.0/jailed-0.2.0.tar.gz):
+[distribution](https://github.com/thethings/jailed-node/releases/download/v0.3.0/jailed-0.3.0.tar.gz):
 
 ```js
 var jailed = require('path/to/jailed.js');
@@ -326,8 +306,6 @@ be used several times or even after the event has actually been fired.
 
 This is how the sandbox is built:
 
-##### In Node.js:
-
 - A Node.js subprocess is created by the Jailed library;
 
 - the subprocess (down)loads the file containing an untrusted code as
@@ -341,30 +319,6 @@ This is how the sandbox is built:
   where the provided sandbox only exposes some basic methods like
   `setTimeout()`, and the `application` object for messaging with the
   application site.
-
-
-##### In a web-browser:
-
-- a [sandboxed
-iframe](http://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/)
-is created with its `sandbox` attribute only set to `"allow-scripts"`
-(to prevent the content of the frame from accessing anything of the
-main application origin);
-
-- then a web-worker is started inside that frame;
-
-- finally the code is loaded by the worker and executed.
-
-*Note: when Jailed library is loaded from the local source (its path
- starts with `file://`), the `"allow-same-origin"` permission is added
- to the `sandbox` attribute of the iframe. Local installations are
- mostly used for testing, and without that permission it would not be
- possible to load the plugin code from a local file. This means that
- the plugin code has an access to the local filesystem, and to some
- origin-shared things like IndexedDB (though the main application page
- is still not accessible from the worker). Therefore if you need to
- safely execute untrusted code on a local system, reuse the Jailed
- library in Node.js.*
 
 
 

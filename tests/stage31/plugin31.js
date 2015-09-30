@@ -1,20 +1,20 @@
-var connected = false;
+var connected = false
 
 var tryConnect = function() {
-    application.whenConnected(connect);
+  application.whenConnected(connect)
 }
 
 var connect = function() {
-    connected = true;
+  connected = true
 }
 
 var checkConnect = function() {
-    application.remote.check(connected, finalize);
+  application.remote.check(connected, finalize)
 }
 
 var finalize = function() {
-    application.remote.done();
+  application.remote.done()
 }
 
-setTimeout(tryConnect, 300);
-setTimeout(checkConnect, 600);
+setTimeout(tryConnect, 300)
+setTimeout(checkConnect, 600)

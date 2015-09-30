@@ -1,7 +1,7 @@
 var api = {
-    square: function(val, cb) {
-        cb(val*val);
-    }
+  square: function(val, cb) {
+    cb(val * val)
+  }
 }
 
-application.setInterface(api);
+application.setInterface(api)
