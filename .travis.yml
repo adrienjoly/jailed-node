@@ -1,5 +1,7 @@
 language: node_js
-script: npm test
+
+script: npm run-script coverage
+
 node_js:
   - "4.1"
   - "4.0"

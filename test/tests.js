@@ -673,8 +673,8 @@ describe('Jailed NodeJS', function() {
 
     plugin.whenFailed(
       protect(
-        function() {
-          assert.ok(true)
+        function(error) {
+          assert.include(error, 'SyntaxError')
           done()
         }
       )
@@ -705,8 +705,8 @@ describe('Jailed NodeJS', function() {
 
     var failed = false
     var fail = protect(
-      function() {
-        assert.ok(true)
+      function(error) {
+        assert.include(error, 'ReferenceError')
         failed = true
         setTimeout(finalize, 500)
       }
@@ -748,8 +748,8 @@ describe('Jailed NodeJS', function() {
 
     var failed = false
     var fail = protect(
-      function() {
-        assert.ok(true)
+      function(error) {
+        assert.include(error, 'SyntaxError')
         failed = true
         setTimeout(finalize, 500)
       }

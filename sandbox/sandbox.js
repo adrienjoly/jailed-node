@@ -8,6 +8,8 @@
 application = {}
 connection = {}
 
+__basedir = __dirname.substring(0, __dirname.lastIndexOf('/'))
+
 process.on('uncaughtException', function(e) {
   printError(e.stack || e)
 })
@@ -74,7 +76,7 @@ function _onImportScript(path) {
   return function(error) {
     if (error) {
       printError(error.stack)
-      process.send({type: 'importFailure', url: path, error: error.message || error})
+      process.send({type: 'importFailure', url: path, error: exportError(error)})
     } else {
       process.send({type: 'importSuccess', url: path})
     }
@@ -140,7 +142,7 @@ var execute = function(code) {
   function onExecute(error) {
     if (error) {
       printError(error.stack)
-      return process.send({type: 'executeFailure', error: error.message || error})
+      return process.send({type: 'executeFailure', error: exportError(error)})
     }
 
     process.send({type: 'executeSuccess'})
@@ -219,6 +221,10 @@ var loadRemote = function(url, done) {
   }
 }
 
+function exportError(error) {
+  if (error) return String(error).replace(__basedir, '')
+  return null
+}
 /**
  * Prints error message and its stack
  *
@@ -227,11 +233,6 @@ var loadRemote = function(url, done) {
 function printError(msg) {
   console.error()
   console.error(msg)
-}
-
-
-function onImport(error) {
-
 }
 
 /**
