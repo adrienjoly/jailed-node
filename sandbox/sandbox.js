@@ -11,7 +11,8 @@ connection = {}
 __basedir = __dirname.substring(0, __dirname.lastIndexOf('/'))
 
 process.on('uncaughtException', function(e) {
-  printError(e.stack || e)
+  printError('Uncaught Exception:', e.stack || e)
+  process.send({type: 'runtimeException', error: exportError(e)})
 })
 
 /**
@@ -31,9 +32,10 @@ process.on('message', function(m) {
     case 'message':
       // unhandled exception would break the IPC channel
       try {
-        conn._messageHandler(m.data);
+      conn._messageHandler(m.data);
       } catch (e) {
         printError(e.stack);
+        process.send({type: 'runtimeException', error: exportError(e)})
       }
       break;
   }
@@ -230,9 +232,9 @@ function exportError(error) {
  *
  * @param {Object} msg stack provided by error.stack or a message
  */
-function printError(msg) {
-  console.error()
-  console.error(msg)
+function printError() {
+  var _log = [new Date().toGMTString().concat(' jailed:sandbox')].concat([].slice.call(arguments))
+  console.error.apply(null, _log)
 }
 
 /**

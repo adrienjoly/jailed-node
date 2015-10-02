@@ -20,9 +20,8 @@ describe('Jailed NodeJS', function() {
     var api = {
       callMe: protect(function() {
         plugin.disconnect()
-        assert.ok(true)
         done()
-      }, done)
+      })
     }
     var path = currentPath + 'stage01/plugin1.js'
     var plugin = new jailed.Plugin(path, api)
@@ -33,9 +32,8 @@ describe('Jailed NodeJS', function() {
     var api = {
       callMe: protect(function() {
         plugin.disconnect()
-        assert.ok(true)
         done()
-      }, done)
+      })
     }
 
     var code = 'application.remote.callMe();'
@@ -47,12 +45,12 @@ describe('Jailed NodeJS', function() {
     var api = {
       square: protect(function(val, cb) {
         cb(val * val)
-      }, done),
+      }),
       report: protect(function(result) {
         plugin.disconnect()
         assert.ok(result == 4)
         done()
-      }, done)
+      })
     }
 
     var path = currentPath + 'stage02/plugin2.js'
@@ -71,7 +69,7 @@ describe('Jailed NodeJS', function() {
       }, done)
 
       plugin.remote.square(val, cb)
-    }, done)
+    })
 
     var plugin = new jailed.Plugin(currentPath + 'stage03/plugin3.js')
     plugin.whenFailed(whenFailed(done))
@@ -139,10 +137,9 @@ describe('Jailed NodeJS', function() {
 
     var finalize = protect(function() {
       if (replied1 && replied2) {
-        assert.ok(true)
         done()
       }
-    }, done)
+    })
 
     var init1 = protect(function() {
       var val = 2
@@ -166,7 +163,7 @@ describe('Jailed NodeJS', function() {
       }
 
       plugin2.remote.square(val, cb)
-    }, done)
+    })
 
     var plugin1 = new jailed.Plugin(path1)
     var plugin2 = new jailed.Plugin(path2)
@@ -219,7 +216,6 @@ describe('Jailed NodeJS', function() {
       }, done),
       done: protect(function() {
         plugin.disconnect()
-        assert.ok(true)
         done()
       }, done)
     }
@@ -235,10 +231,9 @@ describe('Jailed NodeJS', function() {
       checkAttempt: protect(function(cb) {
         assert.ok(attempt == 1)
         cb()
-      }, done),
+      }),
       done: protect(function() {
         plugin1.disconnect()
-        assert.ok(true)
         step2()
       }, done)
     }
@@ -253,7 +248,6 @@ describe('Jailed NodeJS', function() {
         }, done),
         done: protect(function() {
           plugin2.disconnect()
-          assert.ok(true)
           done()
         }, done)
       }
@@ -275,7 +269,7 @@ describe('Jailed NodeJS', function() {
     var api1 = {
       getNum: protect(function(cb) {
         cb(1)
-      }, done),
+      }),
       report: protect(function(result, cb) {
         assert.ok(result == 1)
         cb()
@@ -297,17 +291,16 @@ describe('Jailed NodeJS', function() {
       done: protect(function() {
         done2 = true
         finalize()
-      }, done)
+      })
     }
 
     var finalize = protect(function() {
       if (done1 && done2) {
         plugin1.disconnect()
         plugin2.disconnect()
-        assert.ok(true)
         done()
       }
-    }, done)
+    })
 
     var plugin1 = new jailed.Plugin(path, api1)
     var plugin2 = new jailed.Plugin(path, api2)
@@ -329,16 +322,13 @@ describe('Jailed NodeJS', function() {
     var disconnect = protect(
       function() {
         disconnected = true
-        assert.ok(true)
       }
     )
 
-    var finalize = protect(
-      function() {
-        assert.ok(disconnected)
-        done()
-      }
-    )
+    var finalize = protect(function() {
+      assert.ok(disconnected)
+      done()
+    })
 
     var path = currentPath + 'stage11/plugin11.js'
     var plugin = new jailed.Plugin(path)
@@ -359,19 +349,15 @@ describe('Jailed NodeJS', function() {
       }
     )
 
-    var connect = protect(
-      function() {
-        assert.ok(true)
-        plugin.disconnect()
-        setTimeout(finalize, 1000)
-      }
-    )
+    var connect = protect(function() {
+      plugin.disconnect()
+      setTimeout(finalize, 1000)
+    })
 
     var disconnected = false
     var disconnect = protect(
       function() {
         disconnected = true
-        assert.ok(true)
       }
     )
 
@@ -394,7 +380,6 @@ describe('Jailed NodeJS', function() {
     var path = currentPath + 'stage11/plugin11.js'
 
     var connected = protect(function() {
-      assert.ok(true)
 
       var val = 2
       var cb = protect(function(result) {
@@ -410,7 +395,6 @@ describe('Jailed NodeJS', function() {
     }, done)
 
     var disconnected = protect(function() {
-      assert.ok(true)
       done()
     }, done)
 
@@ -430,7 +414,6 @@ describe('Jailed NodeJS', function() {
     }
 
     var disconnected = function() {
-      assert.ok(true)
       done()
     }
 
@@ -452,7 +435,7 @@ describe('Jailed NodeJS', function() {
       }, done)
 
       plugin1.remote.square(val, cb)
-    }, done)
+    })
 
     var step2 = protect(function() {
       var connected2 = protect(function() {
@@ -468,7 +451,7 @@ describe('Jailed NodeJS', function() {
       plugin2 = new jailed.Plugin(path)
       plugin2.whenConnected(connected2)
       plugin2.whenFailed(whenFailed(done))
-    }, done)
+    })
 
     var step3 = protect(function() {
       plugin1.disconnect()
@@ -488,7 +471,7 @@ describe('Jailed NodeJS', function() {
     var finalize = protect(function() {
       plugin2.disconnect()
       done()
-    }, done)
+    })
 
     plugin1 = new jailed.Plugin(path)
     plugin1.whenConnected(step1)
@@ -505,16 +488,15 @@ describe('Jailed NodeJS', function() {
         } else {
           fCb()
         }
-      }, done),
+      }),
       report: protect(function(result, cb) {
         assert.ok(result)
         cb()
       }, done),
       done: protect(function() {
         plugin.disconnect()
-        assert.ok(true)
         done()
-      }, done)
+      })
     }
 
     var plugin = new jailed.Plugin(path, api)
@@ -553,16 +535,13 @@ describe('Jailed NodeJS', function() {
 
     var step1 = protect(
       function() {
-        assert.ok(true)
 
-        var cb = protect(
-          function() {
-            // should never be called
-            assert.ok(false)
-            pluginBad.disconnect()
-            done()
-          }
-        )
+        var cb = protect(function() {
+// should never be called
+          assert.ok(false)
+          pluginBad.disconnect()
+          done()
+        })
 
         pluginBad.remote.infinite(cb)
 
@@ -570,16 +549,13 @@ describe('Jailed NodeJS', function() {
       }
     )
 
-    var step2 = protect(
-      function() {
-        pluginBad.disconnect()
-        setTimeout(step3, 1000)
-      }
-    )
+    var step2 = protect(function() {
+      pluginBad.disconnect()
+      setTimeout(step3, 1000)
+    })
 
     var step3 = protect(
       function() {
-        assert.ok(true)
 
         pluginBad = new jailed.Plugin(pathBad)
         pluginBad.whenConnected(step4)
@@ -589,14 +565,12 @@ describe('Jailed NodeJS', function() {
 
     var step4 = protect(
       function() {
-        var cb = protect(
-          function() {
-            // should never be called
-            assert.ok(false)
-            pluginBad.disconnect()
-            done()
-          }
-        )
+        var cb = protect(function() {
+// should never be called
+          assert.ok(false)
+          pluginBad.disconnect()
+          done()
+        })
 
         pluginBad.remote.infinite(cb)
 
@@ -606,7 +580,6 @@ describe('Jailed NodeJS', function() {
 
     var step5 = protect(
       function() {
-        assert.ok(true)
 
         pluginGood = new jailed.Plugin(pathGood)
         pluginGood.whenConnected(step6)
@@ -622,7 +595,7 @@ describe('Jailed NodeJS', function() {
           pluginGood.disconnect()
           pluginBad.disconnect()
           done()
-        }, done)
+        })
 
         pluginGood.remote.square(val, cb)
       }
@@ -643,13 +616,10 @@ describe('Jailed NodeJS', function() {
           cb()
         }
       ),
-      done: protect(
-        function() {
-          plugin.disconnect()
-          assert.ok(true)
-          done()
-        }
-      )
+      done: protect(function() {
+        plugin.disconnect()
+        done()
+      })
     }
 
     var plugin = new jailed.Plugin(path, api)
@@ -698,7 +668,6 @@ describe('Jailed NodeJS', function() {
     var disconnected = false
     var disconnect = protect(
       function() {
-        assert.ok(true)
         disconnected = true
       }
     )
@@ -712,13 +681,11 @@ describe('Jailed NodeJS', function() {
       }
     )
 
-    var finalize = protect(
-      function() {
-        plugin.disconnect()
-        assert.ok(failed && disconnected)
-        done()
-      }
-    )
+    var finalize = protect(function() {
+      plugin.disconnect()
+      assert.ok(failed && disconnected)
+      done()
+    })
 
     plugin.whenConnected(connect)
     plugin.whenDisconnected(disconnect)
@@ -741,7 +708,6 @@ describe('Jailed NodeJS', function() {
     var disconnected = false
     var disconnect = protect(
       function() {
-        assert.ok(true)
         disconnected = true
       }
     )
@@ -755,13 +721,11 @@ describe('Jailed NodeJS', function() {
       }
     )
 
-    var finalize = protect(
-      function() {
-        plugin.disconnect()
-        assert.ok(failed && disconnected)
-        done()
-      }
-    )
+    var finalize = protect(function() {
+      plugin.disconnect()
+      assert.ok(failed && disconnected)
+      done()
+    })
 
     plugin.whenConnected(connect)
     plugin.whenDisconnected(disconnect)
@@ -783,29 +747,23 @@ describe('Jailed NodeJS', function() {
     )
 
     var disconnected = false
-    var disconnect = protect(
-      function() {
-        assert.ok(true)
-        disconnected = true
-      }
-    )
+    var disconnect = protect(function() {
+      disconnected = true
+    })
 
     var failed = false
     var fail = protect(
       function() {
-        assert.ok(true)
         failed = true
         setTimeout(finalize, 500)
       }
     )
 
-    var finalize = protect(
-      function() {
-        assert.ok(failed && disconnected)
-        plugin.disconnect()
-        done()
-      }
-    )
+    var finalize = protect(function() {
+      assert.ok(failed && disconnected)
+      plugin.disconnect()
+      done()
+    })
 
     plugin.whenConnected(connect)
     plugin.whenDisconnected(disconnect)
@@ -829,7 +787,6 @@ describe('Jailed NodeJS', function() {
     var disconnected = false
     var disconnect = protect(
       function() {
-        assert.ok(true)
         disconnected = true
       }
     )
@@ -837,7 +794,6 @@ describe('Jailed NodeJS', function() {
     var failed = false
     var fail = protect(
       function() {
-        assert.ok(true)
         failed = true
         setTimeout(finalize, 500)
       }
@@ -861,14 +817,12 @@ describe('Jailed NodeJS', function() {
 
     var step1 = protect(
       function() {
-        var cb = protect(
-          function() {
-            plugin.disconnect()
-            clearTimeout(timeout)
-            assert.ok(false)
-            done()
-          }
-        )
+        var cb = protect(function() {
+          plugin.disconnect()
+          clearTimeout(timeout)
+          assert.ok(false)
+          done()
+        })
 
         plugin.remote.broken(cb)
 
@@ -889,48 +843,41 @@ describe('Jailed NodeJS', function() {
           1000
         )
 
-        var cb = protect(
-          function() {
-            clearTimeout(timeout)
-            assert.ok(true)
-            step3()
-          }
-        )
+        var cb = protect(function() {
+          clearTimeout(timeout)
+          step3()
+        })
 
         plugin.remote.brokenDelayed(cb)
       }
     )
 
-    var step3 = protect(
-      function() {
-        var cb = protect(
-          function() {
-            clearTimeout(timeout)
-            plugin.disconnect()
-            assert.ok(false)
-            done()
-          }
-        )
+    var step3 = protect(function() {
+      var cb = protect(
+        function() {
+          clearTimeout(timeout)
+          plugin.disconnect()
+          assert.ok(false)
+          done()
+        }
+      )
 
-        plugin.remote.broken(cb)
-        var timeout = setTimeout(step4, 500)
-      }
-    )
+      plugin.remote.broken(cb)
+      var timeout = setTimeout(step4, 500)
+    })
 
-    var step4 = protect(
-      function() {
-        var val = 6
-        var cb = protect(
-          function(result) {
-            plugin.disconnect()
-            assert.ok(result = val * val)
-            done()
-          }
-        )
+    var step4 = protect(function() {
+      var val = 6
+      var cb = protect(
+        function(result) {
+          plugin.disconnect()
+          assert.ok(result = val * val)
+          done()
+        }
+      )
 
-        plugin.remote.square(val, cb)
-      }
-    )
+      plugin.remote.square(val, cb)
+    })
 
     var path = currentPath + 'stage19/plugin19.js'
     var plugin = new jailed.Plugin(path)
@@ -982,22 +929,18 @@ describe('Jailed NodeJS', function() {
     var cubeFinished = false
     var squareFinished = false
 
-    var step1 = protect(
-      function() {
-        var valCube = 7
+    var step1 = protect(function() {
+      var valCube = 7
 
-        var cbCube = protect(
-          function(result) {
-            assert.ok(result == valCube * valCube * valCube)
-            cubeFinished = true
-            finalize()
-          }
-        )
+      var cbCube = protect(function(result) {
+        assert.ok(result == valCube * valCube * valCube)
+        cubeFinished = true
+        finalize()
+      })
 
-        plugin.remote.cubeDelayed(valCube, cbCube)
-        step2()
-      }
-    )
+      plugin.remote.cubeDelayed(valCube, cbCube)
+      step2()
+    })
 
     var step2 = protect(
       function() {
@@ -1019,7 +962,6 @@ describe('Jailed NodeJS', function() {
       function() {
         if (cubeFinished && squareFinished) {
           plugin.disconnect()
-          assert.ok(true)
           done()
         }
       }
@@ -1070,45 +1012,37 @@ describe('Jailed NodeJS', function() {
   })
 
   it('Plugin method with several callbacks', function(done) {
-    var step1 = protect(
-      function() {
-        var cb0 = protect(
-          function() {
-            assert.ok(false)
-            step2()
-          }
-        )
+    var step1 = protect(function() {
+      var cb0 = protect(
+        function() {
+          assert.ok(false)
+          step2()
+        }
+      )
 
-        var cb1 = protect(
-          function() {
-            assert.ok(true)
-            step2()
-          }
-        )
+      var cb1 = protect(
+        function() {
+          step2()
+        }
+      )
 
-        plugin.remote.callback(1, cb0, cb1)
-      }
-    )
+      plugin.remote.callback(1, cb0, cb1)
+    })
 
-    var step2 = protect(
-      function() {
-        var cb0 = protect(
-          function() {
-            assert.ok(true)
-            finalize()
-          }
-        )
+    var step2 = protect(function() {
+      var cb0 = protect(function() {
+        finalize()
+      })
 
-        var cb1 = protect(
-          function() {
-            assert.ok(false)
-            finalize()
-          }
-        )
+      var cb1 = protect(
+        function() {
+          assert.ok(false)
+          finalize()
+        }
+      )
 
-        plugin.remote.callback(0, cb0, cb1)
-      }
-    )
+      plugin.remote.callback(0, cb0, cb1)
+    })
 
     var finalize = protect(
       function() {
@@ -1135,19 +1069,15 @@ describe('Jailed NodeJS', function() {
         }
       ),
 
-      check: protect(
-        function(result, cb) {
-          assert.ok(result)
-          cb()
-        }
-      ),
+      check: protect(function(result, cb) {
+        assert.ok(result)
+        cb()
+      }),
 
-      done: protect(
-        function() {
-          plugin.disconnect()
-          done()
-        }
-      )
+      done: protect(function() {
+        plugin.disconnect()
+        done()
+      })
     }
 
     var path = currentPath + 'stage24/plugin24.js'
@@ -1169,12 +1099,10 @@ describe('Jailed NodeJS', function() {
         }
       ),
 
-      check: protect(
-        function(result, cb) {
-          assert.ok(result)
-          cb()
-        }
-      ),
+      check: protect(function(result, cb) {
+        assert.ok(result)
+        cb()
+      }),
 
       done: protect(
         function() {
@@ -1196,20 +1124,18 @@ describe('Jailed NodeJS', function() {
       }
     }
 
-    var step1 = protect(
-      function() {
-        var val = 54
-        var cb = protect(
-          function(result) {
-            plugin.disconnect()
-            assert.ok(result == val * val)
-            done()
-          }
-        )
+    var step1 = protect(function() {
+      var val = 54
+      var cb = protect(
+        function(result) {
+          plugin.disconnect()
+          assert.ok(result == val * val)
+          done()
+        }
+      )
 
-        plugin.remote.squareDelayed(val, cb)
-      }
-    )
+      plugin.remote.squareDelayed(val, cb)
+    })
 
     var path = currentPath + 'stage26/plugin26.js'
     var plugin = new jailed.Plugin(path, api)
@@ -1240,12 +1166,10 @@ describe('Jailed NodeJS', function() {
       )
     }
 
-    var finalize = protect(
-      function() {
-        plugin.disconnect()
-        done()
-      }
-    )
+    var finalize = protect(function() {
+      plugin.disconnect()
+      done()
+    })
 
     var path = currentPath + 'stage27/plugin27.js'
     var plugin = new jailed.Plugin(path, api)
@@ -1293,12 +1217,9 @@ describe('Jailed NodeJS', function() {
 
     var init = protect(
       function() {
-        var cb = protect(
-          function() {
-            plugin.disconnect()
-            assert.ok(true)
-          }
-        )
+        var cb = protect(function() {
+          plugin.disconnect()
+        })
 
         // Node.js child process will exit,
         // Worker will throw, but proceed
@@ -1306,12 +1227,9 @@ describe('Jailed NodeJS', function() {
       }
     )
 
-    var disconnect = protect(
-      function() {
-        assert.ok(true)
-        setTimeout(finalize, 300)
-      }
-    )
+    var disconnect = protect(function() {
+      setTimeout(finalize, 300)
+    })
 
     var finalize = protect(
       function() {
@@ -1322,6 +1240,51 @@ describe('Jailed NodeJS', function() {
     var path = currentPath + 'stage29/plugin29.js'
     var plugin = new jailed.Plugin(path)
     plugin.whenFailed(whenFailed(done))
+    plugin.whenConnected(init)
+    plugin.whenDisconnected(disconnect)
+  })
+
+  it('Delayed plugin error with failOnRuntimeError', function(done) {
+
+    var init = protect(function() {
+      var cb = protect(
+        function() {
+          plugin.disconnect()
+        }
+      )
+
+// Node.js child process will exit,
+// Worker will throw, but proceed
+      plugin.remote.brokenDelayed(cb)
+    })
+
+    var disconnected = false
+    var disconnect = protect(
+      function() {
+        disconnected = true
+      }
+    )
+
+    var failed = false
+    var fail = protect(
+      function() {
+        failed = true
+        setTimeout(finalize, 500)
+      }
+    )
+
+    var finalize = protect(
+      function() {
+        plugin.disconnect()
+        assert.ok(failed && disconnected)
+        done()
+      }
+    )
+
+    var path = currentPath + 'stage29/plugin29.js'
+    var plugin = new jailed.Plugin(path, null, {failOnRuntimeError: true})
+
+    plugin.whenFailed(fail)
     plugin.whenConnected(init)
     plugin.whenDisconnected(disconnect)
   })
@@ -1358,7 +1321,6 @@ describe('Jailed NodeJS', function() {
 
     var step5 = function() {
       plugin.disconnect()
-      assert.ok(true)
       done()
     }
 
@@ -1369,7 +1331,6 @@ describe('Jailed NodeJS', function() {
     var fail = protect(
       function() {
         plugin.disconnect()
-        assert.ok(true)
         setTimeout(finalize, 300)
       }
     )
@@ -1385,7 +1346,6 @@ describe('Jailed NodeJS', function() {
     var disconnected = false
     var disconnect = protect(
       function() {
-        assert.ok(true)
         disconnected = true
       }
     )
@@ -1471,13 +1431,11 @@ describe('Jailed NodeJS', function() {
 
         var disconnectCompleted = false
 
-        var disconnectCheck = protect(
-          function() {
-            plugin.disconnect()
-            assert.ok(disconnectCompleted)
-            done()
-          }
-        )
+        var disconnectCheck = protect(function() {
+          plugin.disconnect()
+          assert.ok(disconnectCompleted)
+          done()
+        })
 
         var tryDisconnect = protect(
           function() {
@@ -1502,11 +1460,10 @@ describe('Jailed NodeJS', function() {
       check: protect(function(result, cb) {
         assert.ok(result)
         cb()
-      }, done),
+      }),
 
       done: protect(function() {
         plugin.disconnect()
-        assert.ok(true)
         done()
       }, done)
     }
@@ -1523,10 +1480,9 @@ describe('Jailed NodeJS', function() {
       check: protect(function(result, cb) {
         assert.ok(result)
         cb()
-      }, done),
+      }),
 
       finished: protect(function() {
-        assert.ok(true)
         pluginFinished++
         disconnect()
       }, done)
@@ -1536,7 +1492,6 @@ describe('Jailed NodeJS', function() {
     var beforeConnect1 = protect(
       function() {
         beforeConnect1Finished++
-        assert.ok(true)
         finalize()
       }
     )
@@ -1545,7 +1500,6 @@ describe('Jailed NodeJS', function() {
     var beforeConnect2 = protect(
       function() {
         beforeConnect2Finished++
-        assert.ok(true)
         finalize()
       }
     )
@@ -1554,7 +1508,6 @@ describe('Jailed NodeJS', function() {
     var beforeDisconnect1 = protect(
       function() {
         beforeDisconnect1Finished++
-        assert.ok(true)
         finalize()
       }
     )
@@ -1563,25 +1516,20 @@ describe('Jailed NodeJS', function() {
     var beforeDisconnect2 = protect(
       function() {
         beforeDisconnect2Finished++
-        assert.ok(true)
         finalize()
       }
     )
 
     var afterConnect1Finished = 0
-    var afterConnect1 = protect(
-      function() {
-        afterConnect1Finished++
-        assert.ok(true)
-        finalize()
-      }
-    )
+    var afterConnect1 = protect(function() {
+      afterConnect1Finished++
+      finalize()
+    })
 
     var afterConnect2Finished = 0
     var afterConnect2 = protect(
       function() {
         afterConnect2Finished++
-        assert.ok(true)
         finalize()
       }
     )
@@ -1590,19 +1538,15 @@ describe('Jailed NodeJS', function() {
     var afterDisconnect1 = protect(
       function() {
         afterDisconnect1Finished++
-        assert.ok(true)
         finalize()
       }
     )
 
     var afterDisconnect2Finished = 0
-    var afterDisconnect2 = protect(
-      function() {
-        afterDisconnect2Finished++
-        assert.ok(true)
-        finalize()
-      }
-    )
+    var afterDisconnect2 = protect(function() {
+      afterDisconnect2Finished++
+      finalize()
+    })
 
     var finalize = protect(
       function() {
@@ -1664,20 +1608,18 @@ describe('Jailed NodeJS', function() {
   })
 })
 
-function protect(method, done) {
+function protect(method) {
   return function() {
-    try {
-      method.apply(this, arguments)
-    } catch (e) {
-      assert.ok(false)
-      done()
-    }
+    var _args = arguments
+    assert.doesNotThrow(function() {
+      method.apply(this, _args)
+    })
   }
 }
 
 function whenFailed(done) {
   return function(error) {
-    console.error('Error:', error)
+    console.error('Unexpected Fail:', error)
     assert.ok(false)
     done()
   }
