@@ -41,6 +41,45 @@ describe('Jailed NodeJS', function() {
     plugin.whenFailed(whenFailed(done))
   })
 
+  it('Execution Timeout', function(done) {
+    var api = {
+      callMe: protect(
+        function() {
+          plugin.disconnect()
+          assert.ok(false)
+          done()
+        }
+      )
+    }
+
+    var disconnected = false
+    var disconnect = protect(
+      function() {
+        disconnected = true
+      }
+    )
+
+    var failed = false
+    var fail = protect(
+      function(error) {
+        assert.include(error, 'TimeoutError')
+        failed = true
+        setTimeout(finalize, 100)
+      }
+    )
+
+    var finalize = protect(function() {
+      plugin.disconnect()
+      assert.ok(failed && disconnected)
+      done()
+    })
+
+    var code = 'setTimeout(function(){ application.remote.callMe() }, 1000);'
+    var plugin = new jailed.DynamicPlugin(code, api, {timeout: 300})
+    plugin.whenDisconnected(disconnect)
+    plugin.whenFailed(fail)
+  })
+
   it('Applictaion API', function(done) {
     var api = {
       square: protect(function(val, cb) {
