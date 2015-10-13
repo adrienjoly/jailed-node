@@ -1,25 +1,38 @@
 {
   "name": "jailed-node",
-  "version": "0.3.0",
-  "description": "Jailed-Node — flexible JS sandbox",
+  "version": "0.3.1",
+  "description": "Jailed-Node — flexible JS sandbox (jailed fork)",
+  "keywords": [
+    "jailed",
+    "subprocess",
+    "untrusted",
+    "sandbox",
+    "user-submitted-code",
+    "restricted",
+    "subprocess"
+  ],
   "main": "lib/jailed.js",
+  "files": [
+    "lib",
+    "sandbox"
+  ],
   "directories": {
-    "test": "tests"
+    "lib": "./lib",
+    "example": "./demos",
+    "test": "./test"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "coverage": "./node_modules/.bin/istanbul cover _mocha -- -R spec"
+    "coverage": "./node_modules/.bin/istanbul cover _mocha -- -R spec",
+    "coveralls": "npm run-script coverage && ./node_modules/.bin/coveralls < coverage/lcov.info"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com//theThings/jailed-node.git"
-  },
+  "repository": "thethings/jailed-node.git",
   "author": "",
+  "homepage": "http://github.com/theThings/jailed-node#readme",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com//theThings/jailed-node/issues"
+    "url": "http://github.com/theThings/jailed-node/issues"
   },
-  "homepage": "https://github.com//theThings/jailed-node#readme",
   "dependencies": {
     "debug": "^2.2.0"
   },
@@ -28,7 +41,8 @@
   },
   "devDependencies": {
     "mocha": "^2.0.0",
-    "chai": "^1.10.0",
-    "istanbul": "^0.3.21"
+    "chai": "^3.3.0",
+    "istanbul": "^0.3.21",
+    "coveralls": "^2.11.4"
   }
 }
