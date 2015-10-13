@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/theThings/jailed-node.svg)](https://travis-ci.org/theThings/jailed-node)  Jailed — flexible JS sandbox
 ============================
 
-Jailed is a small JavaScript library for running untrusted code in a
+**Jailed-node** is a small JavaScript library for running untrusted code in a
 sandbox.
 
 With Jailed you can:
@@ -89,20 +89,20 @@ same way, particularly it may invoke a newer callback in reply.
 
 ### Installation
 
-Install Jailed with npm:
+Install **jailed-node** with npm *(preferred way)*:
 
 ```sh
-$ npm install jailed
+$ npm install jailed-node
 ```
 
 and then in your code:
 
 ```js
-var jailed = require('jailed');
+var jailed = require('jailed-node');
 ```
 
 Optionally you may load the script from the
-[distribution](https://github.com/thethings/jailed-node/releases/download/v0.3.0/jailed-0.3.0.tar.gz):
+[distribution](https://github.com/thethings/jailed-node/releases/download/v0.3.1/jailed-0.3.1.tar.gz):
 
 ```js
 var jailed = require('path/to/jailed.js');
