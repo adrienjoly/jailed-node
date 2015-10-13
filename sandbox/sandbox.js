@@ -1,14 +1,28 @@
+'use strict'
+
 /**
  * Contains the routines loaded by the plugin process under Node.js
  *
  * Initializes the Node.js environment version of the
  * platform-dependent connection object for the plugin site
  */
+var application = global.application = {}
+  , __basedir = __dirname.substring(0, __dirname.lastIndexOf('/'))
+  , __lastMessage = heartBeat()
+  , HEARTBEAT_WAIT_LIMIT = 15000
 
-application = {}
-connection = {}
+setInterval(startCheckHeartBeat, HEARTBEAT_WAIT_LIMIT)
 
-__basedir = __dirname.substring(0, __dirname.lastIndexOf('/'))
+function heartBeat() {
+  return __lastMessage = Date.now()
+}
+
+function startCheckHeartBeat() {
+  if (Date.now() - __lastMessage > HEARTBEAT_WAIT_LIMIT) {
+    printError('Process killed by hearbeat check failure')
+    process.exit()
+  }
+}
 
 process.on('uncaughtException', function(e) {
   printError('Uncaught Exception:', e.stack || e)
@@ -20,6 +34,9 @@ process.on('uncaughtException', function(e) {
  */
 process.on('message', function(m) {
   switch (m.type) {
+    case 'heartbeat':
+      heartBeat()
+      break
     case 'import':
       importScript(m.url)
       break
@@ -32,7 +49,7 @@ process.on('message', function(m) {
     case 'message':
       // unhandled exception would break the IPC channel
       try {
-      conn._messageHandler(m.data);
+        conn._messageHandler(m.data);
       } catch (e) {
         printError(e.stack);
         process.send({type: 'runtimeException', error: exportError(e)})
@@ -241,7 +258,7 @@ function printError() {
  * Connection object provided to the SandboxedSite constructor, plugin
  * site implementation for the Node.js environment
  */
-var conn = {
+var conn = global.connection = {
   disconnect: function() {
     process.exit()
   },
@@ -256,6 +273,3 @@ var conn = {
   onDisconnect: function() {
   }
 }
-
-connection = conn
-
