@@ -9,6 +9,7 @@
 var application = global.application = {}
   , __basedir = __dirname.substring(0, __dirname.lastIndexOf('/'))
   , __lastMessage = heartBeat()
+  , DYNAMIC_PLUGIN_NAME = 'DYNAMIC PLUGIN'
   , HEARTBEAT_WAIT_LIMIT = 15000
 
 setInterval(startCheckHeartBeat, HEARTBEAT_WAIT_LIMIT)
@@ -24,7 +25,7 @@ function processSend(msg) {
 function startCheckHeartBeat() {
   if (Date.now() - __lastMessage > HEARTBEAT_WAIT_LIMIT) {
     printError('Process killed by hearbeat check failure')
-    process.exit()
+    process.exit(1)
   }
 }
 
@@ -57,7 +58,7 @@ process.on('message', function(data) {
         conn._messageHandler(m.data);
       } catch (e) {
         printError(e.stack);
-        processSend({type: 'runtimeException', error: exportError(e)})
+        processSend({type: 'runtimeException', error: exportError(e, m.url)})
       }
       break;
   }
@@ -100,7 +101,7 @@ function _onImportScript(path) {
   return function(error) {
     if (error) {
       printError(error.stack)
-      processSend({type: 'importFailure', url: path, error: exportError(error)})
+      processSend({type: 'importFailure', url: path, error: exportError(error, path)})
     } else {
       processSend({type: 'importSuccess', url: path})
     }
@@ -161,7 +162,7 @@ var executeJailed = function(code, url, done) {
  * @param {String} code to execute
  */
 var execute = function(code) {
-  executeJailed(code, 'DYNAMIC PLUGIN', onExecute)
+  executeJailed(code, DYNAMIC_PLUGIN_NAME, onExecute)
 
   function onExecute(error) {
     if (error) {
@@ -243,11 +244,19 @@ var loadRemote = function(url, done) {
   }
 }
 
-function exportError(error) {
-  if (error)
-    return String(error).replace(__basedir, '')
-      + (error.stack ? ' (' + (error.stack.split('\n')[1] || '').trim() + ')' : '');
-  return null
+function exportError(error, fileName) {
+  if (!error) return null
+
+  var msg = hideDir(String(error))
+    , stackLine = error.stack && hideDir(error.stack.split('\n')[1] || '') || null
+
+  fileName = fileName && hideDir(fileName) || DYNAMIC_PLUGIN_NAME;
+
+  return (stackLine && stackLine.indexOf(fileName) !== -1) ? msg + ' ' + stackLine : msg
+
+  function hideDir(str) {
+    return (str || '').replace(__basedir, '').trim();
+  }
 }
 
 /**
