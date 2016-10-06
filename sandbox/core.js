@@ -17,7 +17,6 @@
     application.remote = site.getRemote()
   })
 
-
   /**
    * Simplified clone of Whenable instance (the object can not be
    * placed into a shared script, because the main library needs it

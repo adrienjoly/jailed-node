@@ -1645,6 +1645,18 @@ describe('Jailed NodeJS', function() {
     plugin.whenDisconnected(beforeDisconnect1)
     plugin.whenDisconnected(beforeDisconnect2)
   })
+
+  it('Remote call return error', function(done) {
+    var path = currentPath + 'stage33/plugin33.js'
+    var plugin = new jailed.Plugin(path, {})
+
+    plugin.whenConnected(function() {
+      plugin.remote.returnError(function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+  })
 })
 
 function protect(method) {

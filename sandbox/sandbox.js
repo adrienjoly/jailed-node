@@ -17,6 +17,10 @@ function heartBeat() {
   return __lastMessage = Date.now()
 }
 
+function processSend(msg) {
+  process.send(require('../lib/codec').encode(msg));
+}
+
 function startCheckHeartBeat() {
   if (Date.now() - __lastMessage > HEARTBEAT_WAIT_LIMIT) {
     printError('Process killed by hearbeat check failure')
@@ -26,13 +30,14 @@ function startCheckHeartBeat() {
 
 process.on('uncaughtException', function(e) {
   printError('Uncaught Exception:', e.stack || e)
-  process.send({type: 'runtimeException', error: exportError(e)})
+  processSend({type: 'runtimeException', error: exportError(e)})
 })
 
 /**
- * Event lisener for the plugin message
+ * Event listener for the plugin message
  */
-process.on('message', function(m) {
+process.on('message', function(data) {
+  var m = require('../lib/codec').decode(data)
   switch (m.type) {
     case 'heartbeat':
       heartBeat()
@@ -52,7 +57,7 @@ process.on('message', function(m) {
         conn._messageHandler(m.data);
       } catch (e) {
         printError(e.stack);
-        process.send({type: 'runtimeException', error: exportError(e)})
+        processSend({type: 'runtimeException', error: exportError(e)})
       }
       break;
   }
@@ -95,9 +100,9 @@ function _onImportScript(path) {
   return function(error) {
     if (error) {
       printError(error.stack)
-      process.send({type: 'importFailure', url: path, error: exportError(error)})
+      processSend({type: 'importFailure', url: path, error: exportError(error)})
     } else {
-      process.send({type: 'importSuccess', url: path})
+      processSend({type: 'importSuccess', url: path})
     }
   }
 }
@@ -161,10 +166,10 @@ var execute = function(code) {
   function onExecute(error) {
     if (error) {
       printError(error.stack)
-      return process.send({type: 'executeFailure', error: exportError(error)})
+      return processSend({type: 'executeFailure', error: exportError(error)})
     }
 
-    process.send({type: 'executeSuccess'})
+    processSend({type: 'executeSuccess'})
   }
 }
 
@@ -220,30 +225,31 @@ var loadRemote = function(url, done) {
       done(new Error(msg))
     } else {
       var content = ''
-      res.on('end', function() {
-        done(null, content)
-      })
-      res.on(
-        'readable',
-        function() {
+      res
+        .on('end', function() {
+          done(null, content)
+        })
+        .on('readable', function() {
           var chunk = res.read()
           content += chunk.toString()
-        }
-      )
+        })
     }
   }
 
   try {
-    require('http').get(url, receive).on('error', done)
+    require(url.indexOf('https') === 0 ? 'https' : 'http').get(url, receive).on('error', done)
   } catch (e) {
     done(e)
   }
 }
 
 function exportError(error) {
-  if (error) return String(error).replace(__basedir, '')
+  if (error)
+    return String(error).replace(__basedir, '')
+      + (error.stack ? ' (' + (error.stack.split('\n')[1] || '').trim() + ')' : '');
   return null
 }
+
 /**
  * Prints error message and its stack
  *
@@ -263,7 +269,7 @@ var conn = global.connection = {
     process.exit()
   },
   send: function(data) {
-    process.send({type: 'message', data: data})
+    processSend({type: 'message', data: data})
   },
   onMessage: function(h) {
     conn._messageHandler = h
