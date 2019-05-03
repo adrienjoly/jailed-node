@@ -34,6 +34,10 @@ process.on('uncaughtException', function(e) {
   processSend({type: 'runtimeException', error: exportError(e)})
 })
 
+process.on('unhandledRejection', function (e, promise) {
+  processSend({type: 'runtimeRejection', error: exportError(e), promise })
+})
+
 /**
  * Event listener for the plugin message
  */
