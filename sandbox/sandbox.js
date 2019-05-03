@@ -30,7 +30,7 @@ function startCheckHeartBeat() {
 }
 
 process.on('uncaughtException', function(e) {
-  //printError('Uncaught Exception:', e.stack || e)
+  printError('Uncaught Exception:', e.stack || e)
   processSend({type: 'runtimeException', error: exportError(e)})
 })
 
@@ -57,7 +57,7 @@ process.on('message', function(data) {
       try {
         conn._messageHandler(m.data);
       } catch (e) {
-        //printError(e.stack);
+        printError(e.stack);
         processSend({type: 'runtimeException', error: exportError(e, m.url)})
       }
       break;
@@ -100,7 +100,7 @@ var importScriptJailed = function(url) {
 function _onImportScript(path) {
   return function(error) {
     if (error) {
-      //printError(error.stack)
+      printError(error.stack)
       processSend({type: 'importFailure', url: path, error: exportError(error, path)})
     } else {
       processSend({type: 'importSuccess', url: path})
@@ -166,7 +166,7 @@ var execute = function(code) {
 
   function onExecute(error) {
     if (error) {
-      //printError(error.stack)
+      printError(error.stack)
       return processSend({type: 'executeFailure', error: exportError(error)})
     }
 
@@ -222,7 +222,7 @@ var loadRemote = function(url, done) {
     if (res.statusCode != 200) {
       var msg = 'Failed to load ' + url + '\n' +
         'HTTP responce status code: ' + res.statusCode
-      //printError(msg)
+      printError(msg)
       done(new Error(msg))
     } else {
       var content = ''
