@@ -35,7 +35,17 @@ process.on('uncaughtException', function(e) {
 })
 
 process.on('unhandledRejection', function (e, promise) {
-  processSend({type: 'runtimeRejection', error: exportError(e), promise })
+  if (typeof promise.catch === 'function') {
+    promise.catch(err => {
+      processSend({
+        type: 'runtimeRejection',
+        error: exportError(e),
+        extras: { promiseStack: err.stack.toString() },
+      })
+    })
+  } else {
+    processSend({ type: 'runtimeRejection', error: exportError(e) })
+  }
 })
 
 /**
@@ -61,7 +71,6 @@ process.on('message', function(data) {
       try {
         conn._messageHandler(m.data);
       } catch (e) {
-        printError(e.stack);
         processSend({type: 'runtimeException', error: exportError(e, m.url)})
       }
       break;
